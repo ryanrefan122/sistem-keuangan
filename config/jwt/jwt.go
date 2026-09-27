@@ -3,6 +3,7 @@ package jwt
 import (
 	"errors"
 	"main/model"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -12,7 +13,7 @@ type Login struct {
 	Token string `json:"token"`
 }
 
-var secretKey = []byte("rahasia_sangat_panjang")
+var secretKey = []byte(os.Getenv("JWT_SECRET"))
 
 func GenerateToken(user model.User) (string, error) {
 	claims := jwt.MapClaims{
