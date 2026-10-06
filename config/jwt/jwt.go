@@ -14,7 +14,7 @@ type Login struct {
 }
 
 func secretKey() []byte {
-    return []byte(os.Getenv("JWT_SECRET"))
+	return []byte(os.Getenv("JWT_SECRET"))
 }
 
 func GenerateToken(user model.Login) (string, error) {
@@ -35,7 +35,7 @@ func GenerateToken(user model.Login) (string, error) {
 
 func ParseToken(tokenStr string) (model.Claims, error) {
 	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (any, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+		if t.Method != jwt.SigningMethodHS256 {
 			return nil, errors.New("metode signing tidak valid")
 		}
 		return secretKey(), nil
@@ -46,12 +46,19 @@ func ParseToken(tokenStr string) (model.Claims, error) {
 	if !token.Valid {
 		return model.Claims{}, errors.New("token tidak valid")
 	}
-
 	jwtClaims := token.Claims.(jwt.MapClaims)
+	id, ok := jwtClaims["id"].(float64)
+	if !ok {
+		return model.Claims{}, errors.New("claim id tidak valid")
+	}
 
+	username, ok := jwtClaims["username"].(string)
+	if !ok {
+		return model.Claims{}, errors.New("claim username tidak valid")
+	}
 	claims := model.Claims{
-		ID:       int(jwtClaims["id"].(float64)),
-		Username: jwtClaims["username"].(string),
+		ID:       int(id),
+		Username: username,
 	}
 	return claims, nil
 }
