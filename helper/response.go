@@ -41,3 +41,14 @@ var (
 		Message: "Article has been deleted",
 	}
 )
+var (
+    ErrUnauthorized = &AppError{
+        Status:  401,
+        Message: "Username atau password salah",
+    }
+
+    ErrUsernameExists = &AppError{
+        Status:  409,
+        Message: "Username sudah digunakan",
+    }
+)

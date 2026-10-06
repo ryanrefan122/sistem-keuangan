@@ -17,8 +17,14 @@ func Connect() {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	database := os.Getenv("DB_NAME")
-	dsn := user + ":" + password +
-		"@tcp(" + host + ":" + port + ")/login?parseTime=true" + database
+	dsn := fmt.Sprintf(
+    "%s:%s@tcp(%s:%s)/%s?parseTime=true",
+    user,
+    password,
+    host,
+    port,
+    database,
+)
 	db, err := sql.Open(
 		"mysql",
 		dsn,

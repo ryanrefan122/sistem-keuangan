@@ -13,18 +13,20 @@ type Login struct {
 	Token string `json:"token"`
 }
 
-var secretKey = []byte(os.Getenv("JWT_SECRET"))
+func secretKey() []byte {
+    return []byte(os.Getenv("JWT_SECRET"))
+}
 
-func GenerateToken(user model.User) (string, error) {
+func GenerateToken(user model.Login) (string, error) {
 	claims := jwt.MapClaims{
 		"id":       user.ID,
-		"username": user.Username,
+		"username": user.Login,
 	}
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		claims,
 	)
-	tokenstring, err := token.SignedString(secretKey)
+	tokenstring, err := token.SignedString(secretKey())
 	if err != nil {
 		return "", err
 	}
@@ -36,7 +38,7 @@ func ParseToken(tokenStr string) (model.Claims, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("metode signing tidak valid")
 		}
-		return secretKey, nil
+		return secretKey(), nil
 	})
 	if err != nil {
 		return model.Claims{}, err

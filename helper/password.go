@@ -17,7 +17,7 @@ func Hash(u string) (string, error) {
 	u = string(hash)
 	return u, nil
 }
-func CompareHashPw(user model.User, input model.Login) error {
+func CompareHashPw(user model.Login, input model.Login) error {
 	err := bcrypt.CompareHashAndPassword(
 		[]byte(user.Password),
 		[]byte(input.Password),

@@ -3,7 +3,6 @@ package handler
 import (
 	"main/config/jwt"
 	"main/model"
-	"strconv"
 
 	"main/service"
 
@@ -19,7 +18,7 @@ func ProfilUser(c *gin.Context) {
 
 	user, err1 := service.GetProfil(claims.ID)
 	if err1 != nil {
-		c.JSON(401, err1.Error())
+		c.Error(err1)
 		return
 	}
 	c.JSON(200, user)
@@ -46,13 +45,12 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	id := c.Param("id")
-	Id, err := strconv.Atoi(id)
+	claims, err := jwt.GetClaims(c)
 	if err != nil {
 		c.Error(err)
 		return
 	}
-	ok := service.DeleteUser(Id)
+	ok := service.DeleteUser(claims.ID)
 	if ok != nil {
 		c.Error(ok)
 		return

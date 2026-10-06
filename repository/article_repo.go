@@ -97,14 +97,13 @@ func GetArticleUser(id int) ([]model.Article, error) {
 func GetArticleById(id int) (model.Article, error) {
 	row := database.DB.QueryRow("SELECT id, user_id, title, content, created_at, updated_at FROM articles WHERE id = ? ", id)
 	var article model.Article
-	row.Scan(
+	err := row.Scan(
 		&article.ID,
 		&article.UserId,
 		&article.Judul,
 		&article.Content,
 		&article.CreatedAt,
 		&article.UpdatedAt)
-	err := row.Err()
 	if err != nil {
 		return model.Article{}, err
 	}

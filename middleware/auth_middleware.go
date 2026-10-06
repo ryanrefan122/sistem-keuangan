@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"fmt"
 	"main/config/jwt"
+	"main/helper"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -28,14 +28,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		token := strings.TrimPrefix(auth, "Bearer ")
 		token = strings.TrimSpace(token)
 
-		fmt.Println("Authorization:", auth)
-		fmt.Println("Token:", token)
-
 		claims, err := jwt.ParseToken(token)
 		if err != nil {
-			c.JSON(401, gin.H{
-				"error": "token tidak valid",
-			})
+			c.Error(helper.ErrUnauthorized)
 			c.Abort()
 			return
 		}

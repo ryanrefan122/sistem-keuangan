@@ -1,16 +1,13 @@
 package handler
 
 import (
-	"fmt"
 	"main/config/jwt"
 	"main/model"
-	"main/repository"
 	"main/service"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 func CreateArticle(c *gin.Context) {
 	var article model.Article
@@ -30,6 +27,7 @@ func CreateArticle(c *gin.Context) {
 
 	e := service.CreateArticle(article.UserId, article)
 	if e != nil {
+		c.Error(e)
 		return
 	}
 }
@@ -44,13 +42,14 @@ func GetArticleUser(c *gin.Context) {
 
 	article, er := service.GetArticleUser(claims.ID)
 	if er != nil {
+		c.Error(er)
 		return
 	}
 	c.JSON(200, article)
 }
 
 func GetArticle(c *gin.Context) {
-	a, er := repository.GetArticle()
+	a, er := service.GetArticle()
 	if er != nil {
 		c.Error(er)
 		return
@@ -58,23 +57,17 @@ func GetArticle(c *gin.Context) {
 	c.JSON(200, a)
 
 }
-func GetArticle1(c *gin.Context) {
-	a, er := repository.GetArticle()
-	if er != nil {
-		return
-	}
-	c.JSON(200, a)
-}
+
 func GetArticleById(c *gin.Context) {
 	id := c.Param("id")
 	idd, err := strconv.Atoi(id)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 	a, er := service.GetArticleById(idd)
 	if er != nil {
 		c.Error(er)
-		fmt.Println("err", er.Error())
 		return
 	}
 	c.JSON(200, a)
@@ -90,6 +83,7 @@ func UpdatedArticle(c *gin.Context) {
 	id := c.Param("id")
 	idd, err := strconv.Atoi(id)
 	if err != nil {
+		c.Error(err)
 		return
 	}
 	claims, err := jwt.GetClaims(c)

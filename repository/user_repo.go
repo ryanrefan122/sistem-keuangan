@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
 	"main/config/database"
 	"main/model"
@@ -9,8 +8,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-type Userrepo interface{
-	
+type Userrepo interface {
 }
 
 func CreateUser(user model.Registrasi) error {
@@ -38,22 +36,22 @@ func GetUserById(id int) (model.User, error) {
 		&u.ID, &u.Username,
 	)
 	if err != nil {
-		return model.User{}, sql.ErrNoRows
+		return model.User{}, err
 	}
 	return u, nil
 }
 
-func GetUser(user string) (model.User, error) {
-	var u model.User
+func GetUser(user string) (model.Login, error) {
+	var u model.Login
 	rows := database.DB.QueryRow(
 		"SELECT id, username, password FROM users WHERE username=? OR email=?",
 		user, user,
 	)
 	err := rows.Scan(
-		&u.ID, &u.Username, &u.Password,
+		&u.ID, &u.Login, &u.Password,
 	)
 	if err != nil {
-		return model.User{}, sql.ErrNoRows
+		return model.Login{}, err
 	}
 	return u, nil
 }
@@ -61,6 +59,8 @@ func GetUser(user string) (model.User, error) {
 func UpdateUser(id int, user model.User) error {
 	_, err := database.DB.Exec("UPDATE users SET username = ?, email = ?, no_telepon = ? WHERE id = ?",
 		user.Username,
+		user.Email,
+		user.NoTelepon,
 		id,
 	)
 	if err != nil {
