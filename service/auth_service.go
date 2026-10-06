@@ -20,14 +20,14 @@ func Login(u model.Login) error {
 	}
 	user, er := repository.GetUser(u.Login)
 	if er != nil {
-		if er == sql.ErrNoRows {
-			return errors.New("username atau password tidak ditemukan")
+		if errors.Is(er, sql.ErrNoRows) {
+    	return helper.ErrUnauthorized
 		}
 		return er
 	}
 	st := helper.CompareHashPw(user, u)
 	if st != nil {
-		return errors.New("username atau password salah")
+		return helper.ErrUnauthorized
 	}
 
 	token, e := jwt.GenerateToken(user)
