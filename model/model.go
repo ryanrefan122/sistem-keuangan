@@ -12,6 +12,10 @@ type Registrasi struct {
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
 
+type TEst interface{
+	tes()
+}
+
 type Login struct {
 	Login    string `json:"username" validate:"required"`
 	Password string `json:"password" validate:"required,min=8"`

@@ -9,6 +9,10 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
+type Userrepo interface{
+	
+}
+
 func CreateUser(user model.Registrasi) error {
 	_, err := database.DB.Exec("INSERT INTO users(username, password, email, no_telepon ) VALUES(?,?,?,?)",
 		user.Username,
